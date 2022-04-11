@@ -131,7 +131,7 @@ class HBNBCommand(cmd.Cmd):
                     try:
                         value = float(value)
                     except Exception:
-                        continue
+                        pass
                 dic[key] = value
         return (dic)
 
