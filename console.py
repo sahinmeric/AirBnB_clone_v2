@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 """ Console Module """
+from ast import arg
 import cmd
+from hashlib import new
+from itertools import starmap
 import sys
+from xml.sax.saxutils import prepare_input_source
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -113,42 +117,26 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def dic_creator(self, args):
-        """creates a dictionary from a list"""
-        dic = {}
-        for arg in args:
-            if "=" in args:
-                to_add = arg.split('=', 1)
-                key = to_add[0]
-                value = to_add[1]
-                if value[0] == value[-1] == '"':
-                    value = value.replace('"', '').replace('_', '')
-                else:
-                    try:
-                        value = int(value)
-                    except Exception:
-                        pass
-                    try:
-                        value = float(value)
-                    except Exception:
-                        pass
-                dic[key] = value
-        return (dic)
-
     def do_create(self, args):
         """ Create an object of any class"""
-        args = args.split()
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
-        elif args[0] in HBNBCommand.classes:
-            dic = self.dic_creator(args[1:])
-            instance = HBNBCommand.classes[args[0]](**dic)
-        else:
+        arglist = args.split()
+        if arglist[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        print(instance.id)
-        instance.save()
+        new_instance = eval(f"{arglist[0]}()")
+        for i in arglist[1:]:
+            sparg = i.split("=")
+            if len(sparg) < 2:
+                continue
+            keyname = sparg[0]
+            value = sparg[1]
+            valueFinal = value.replace("_", "")
+            setattr(new_instance, keyname, valueFinal)
+        print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
