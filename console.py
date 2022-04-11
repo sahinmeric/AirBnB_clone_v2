@@ -128,7 +128,6 @@ class HBNBCommand(cmd.Cmd):
                         value = int(value)
                     except Exception:
                         pass
-                else:
                     try:
                         value = float(value)
                     except Exception:
