@@ -1,6 +1,6 @@
-/*this script creates a database named hbnb_dev_db
-and creates a new user with all privilages on all the tables of hbnb_dev_db
-and select privilages on all the tables of performance_schema*/
+-- this script creates a database named hbnb_dev_db
+-- and creates a new user with all privilages on all the tables of hbnb_dev_db
+-- and select privilages on all the tables of performance_schema
 CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
 CREATE USER IF NOT EXISTS 'hbnb_dev'@'localhost' IDENTIFIED BY 'hbnb_dev_pwd';
 GRANT ALL PRIVILEGES ON hbnb_dev_db.* TO hbnb_dev@localhost;
