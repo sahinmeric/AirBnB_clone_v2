@@ -133,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
                 continue
             keyname = sparg[0]
             value = sparg[1]
-            valueFinal = value.replace("_", "")
+            valueFinal = value.replace("_", " ")
             setattr(new_instance, keyname, valueFinal)
         print(new_instance.id)
         storage.save()
