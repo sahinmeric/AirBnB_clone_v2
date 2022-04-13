@@ -10,18 +10,20 @@ from models.city import City
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         cities = relationship('City', backref='state',
                               cascade='all, delete-orphan')
-
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
     if getenv('HBNB_TYPE_STORAGE') == 'fs':
+        name = ""
+
         @property
         def cities(self):
+            """ getter for the list of cities of states"""
             city_list = []
-            for ob_id, city in models.storage.all(City).items():
-                if self.id == city.state_id:
-                    city_list.append(city)
+            new_dict = models.storage.all(City)
+            for key, obj in new_dict.items():
+                if self.id == obj.state_id:
+                    city_list.append(obj)
             return city_list

@@ -1,11 +1,17 @@
 #!/usr/bin/python3
 """ DB storage"""
 
-from audioop import add
-from models.base_model import BaseModel, Base
 from os import getenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+from models.state import State
+from models.city import City
+from models.user import User
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+from models.base_model import Base
 
 
 class DBStorage():
@@ -29,25 +35,26 @@ class DBStorage():
         """ Lists all the objects of given class
         or every objects if the class is not given
         """
-        objects = []
+        dic_obj = []
+        classes = {'State': State, 'City': City, 'User': User,
+                   'Place': Place, 'Review': Review, "Amenity": Amenity}
+
         if cls is None:
-            classes = ['State', 'City', 'User', 'Place', 'Review', 'Amenity']
-            objs = []
-            for _class in classes:
-                query = self.__session.query(eval(_class))
-                for res in query:
-                    objs.append(res)
+            for k, v in classes.items():
+                query = self.__session.query(v).all()
+                for obj in query:
+                    dic_obj[obj.__class__.__name__ + "." + str(obj.id)] = obj
+
         else:
-            objs = self.__session.query(cls).all()
-        for value in objs:
-            key = type(value).__name__+'.'+str(value.id)
-            objects[key] = value
-        return objects
+            query = self.__session.query(cls).all()
+            for obj in query:
+                dic_obj[obj.__class__.__name__ + "." + str(obj.id)] = obj
+        return dic_obj
 
     def new(self, obj):
         """adds the object to the current db session"""
         if obj:
-            self.__session.add(add)
+            self.__session.add(obj)
 
     def save(self):
         """saves the current session to db"""
@@ -62,5 +69,9 @@ class DBStorage():
         """Creates all the tables in the db and starts the session"""
         Base.metadata.create_all(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        session = scoped_session(ses)
-        self.__session
+        Session = scoped_session(ses)
+        self.__session = Session()
+
+    def close(self):
+        """Json to obj"""
+        self.__session.close()
