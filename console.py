@@ -2,10 +2,7 @@
 """ Console Module """
 from ast import arg
 import cmd
-from hashlib import new
-from itertools import starmap
 import sys
-from xml.sax.saxutils import prepare_input_source
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
