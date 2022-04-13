@@ -47,6 +47,22 @@ class Place(BaseModel):
                     review_list.append(review)
             return review_list
 
+        @property
+        def amenities(self):
+            """Returns all amenities linked to the place
+            """
+            am_list = []
+            for amenity in amenity_ids:
+                if amenity.id == self.id:
+                    am_list.append(amenity)
+            return am_list
+
+        @amenities.setter
+        def amenitites(self, name):
+            """Adds an Amenity.id to amenity_ids"""
+            if type(name).__name__ == 'Amenity':
+                self.amenity_ids.append(name)
+
     # city_id = ""
     # user_id = ""
     # name = ""
